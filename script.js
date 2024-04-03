@@ -8,7 +8,7 @@ let dragSrcEl = null;
 function handleDragStart(e) {
   dragSrcEl = e.target;
   e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/html', dragSrcEl.innerHTML);
+  e.dataTransfer.setData('text', this.id);
 }
 
 // Function to handle drag over event
@@ -30,8 +30,14 @@ function handleDrop(e) {
   // Don't do anything if dropping the same column we're dragging.
   if (dragSrcEl !== this) {
     // Swap the content of the dragged and dropped elements
-    dragSrcEl.innerHTML = e.target.innerHTML;
-    e.target.innerHTML = e.dataTransfer.getData('text/html');
+	  const dragSrcBg = window.getComputedStyle(dragSrcEl).backgroundImage;
+    dragSrcEl.style.backgroundImage = window.getComputedStyle(this).backgroundImage;
+    this.style.backgroundImage = dragSrcBg;
+
+    // Swap the content of the dragged and dropped elements
+    const dragSrcContent = dragSrcEl.innerHTML;
+    dragSrcEl.innerHTML = this.innerHTML;
+    this.innerHTML = dragSrcContent;
   }
 
   return false;
