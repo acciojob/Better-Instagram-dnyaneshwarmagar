@@ -44,7 +44,8 @@ function handleDrop(e) {
 }
 
 // Add event listeners to draggable elements
-draggables.forEach(draggable => {
+draggables.forEach((draggable,index) => {
+	draggable.setAttribute("id",`drag${index+1}`)
   draggable.addEventListener('dragstart', handleDragStart);
   draggable.addEventListener('dragover', handleDragOver);
   draggable.addEventListener('drop', handleDrop);
