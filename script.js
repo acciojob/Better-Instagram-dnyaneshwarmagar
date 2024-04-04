@@ -1,53 +1,46 @@
-//your code here
-// Get all draggable elements
-const draggables = document.querySelectorAll('.image');
-
-let dragSrcEl = null;
-
-// Function to handle drag start event
-function handleDragStart(e) {
-  dragSrcEl = e.target;
-  e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text', this.id);
+let dragindex = 0;
+let dropindex = 0;
+let clone = "";
+ 
+const images = document.querySelectorAll(".image");
+ 
+function drag(e) {
+  e.dataTransfer.setData("text", e.target.id);
 }
-
-// Function to handle drag over event
-function handleDragOver(e) {
-  if (e.preventDefault) {
-    e.preventDefault(); // Necessary. Allows us to drop.
-  }
-  e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
-
-  return false;
+ 
+function allowDrop(e) {
+  e.preventDefault();
 }
-
-// Function to handle drop event
-function handleDrop(e) {
-  if (e.stopPropagation) {
-    e.stopPropagation(); // stops the browser from redirecting.
+ 
+function drop(e) {
+  clone = e.target.cloneNode(true);
+  let data = e.dataTransfer.getData("text");
+  let nodelist = document.getElementById("parent").childNodes;
+  console.log(data, e.target.id);
+  for (let i = 0; i < nodelist.length; i++) {
+    if (nodelist[i].id == data) {
+      dragindex = i;
+    }
   }
-
-  // Don't do anything if dropping the same column we're dragging.
-  if (dragSrcEl !== this) {
-    // Swap the content of the dragged and dropped elements
-	  const dragSrcBg = window.getComputedStyle(dragSrcEl).backgroundImage;
-    dragSrcEl.style.backgroundImage = window.getComputedStyle(this).backgroundImage;
-    this.style.backgroundImage = dragSrcBg;
-
-    // Swap the content of the dragged and dropped elements
-    const dragSrcContent = dragSrcEl.innerHTML;
-    dragSrcEl.innerHTML = this.innerHTML;
-    this.innerHTML = dragSrcContent;
-  }
-
-  return false;
+ 
+  dragdrop(clone);
+ 
+  document
+    .getElementById("parent")
+    .replaceChild(document.getElementById(data), e.target);
+ 
+  document
+    .getElementById("parent")
+    .insertBefore(
+      clone,
+      document.getElementById("parent").childNodes[dragindex]
+    );
 }
-
-// Add event listeners to draggable elements
-draggables.forEach((draggable,index) => {
-	// draggable.setAttribute("id",`drag${index+1}`)
-  draggable.addEventListener('dragstart', handleDragStart);
-  draggable.addEventListener('dragover', handleDragOver);
-  draggable.addEventListener('drop', handleDrop);
-});
-
+ 
+const dragdrop = (image) => {
+  image.ondragstart = drag;
+  image.ondragover = allowDrop;
+  image.ondrop = drop;
+};
+ 
+images.forEach(dragdrop);
